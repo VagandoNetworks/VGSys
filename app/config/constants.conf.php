@@ -52,10 +52,10 @@
     define('MOD_PATH', ROOT . DS . 'module' . DS);
     
     // Componentes de un módulo
-    define('MOD_COMPONENT', 'library' . DS . 'component');
+    define('MOD_COMPONENT', 'include' . DS . 'component');
     
     // Servicios de un módulo
-    define('MOD_SERVICE', 'library' . DS . 'service');
+    define('MOD_SERVICE', 'include' . DS . 'service');
     
     // Plantillas
     define('MOD_TPL', 'template' . DS);

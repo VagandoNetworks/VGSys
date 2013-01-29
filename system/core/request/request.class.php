@@ -85,6 +85,21 @@ class Core_Request {
     // --------------------------------------------------------------------
     
     /**
+     * Obtener un parámetro y convertirlo en arreglo.
+     * 
+     * @access public
+     * @param string $name
+     * @param string $default
+     * @return int
+     */
+    public function getArray($name, $default = null)
+    {
+        return (array) $this->get($name, $default);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
      * Obtener todos los valores recibidos.
      * 
      * @access public

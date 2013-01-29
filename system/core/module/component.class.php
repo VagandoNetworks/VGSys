@@ -27,7 +27,7 @@ class Core_Component {
      * 
      * @var array
      */
-    private $_bases = array(
+    private $_objects = array(
         'layout' => 'template',
         'db' => 'database',
         'request' => 'request',
@@ -42,9 +42,9 @@ class Core_Component {
      */
     public function __get($name)
     {
-        if (isset($this->_bases[$name]))
+        if (isset($this->_objects[$name]))
         {
-            return Core::getLib($this->_bases[$name]);
+            return Core::getLib($this->_objects[$name]);
         }
     }
 }

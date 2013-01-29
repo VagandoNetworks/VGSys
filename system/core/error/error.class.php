@@ -25,9 +25,10 @@ class Core_Error {
     /**
      * Error
      */
-    public static function trigger($message = '')
+    public static function trigger($message = '', $code = 500)
     {
-        echo $message;
+        echo $code . '|' . utf8_decode($message);
+        exit;
     }
     /**
      * Reporte de errores

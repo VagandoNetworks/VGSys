@@ -10,11 +10,11 @@ function callAjax()
     $.ajax({
         type : 'POST',
         url: '/ajax/blog/updateBlog',
-        data: 'id=12&u=Jneutron',
+        data: 'val[id]=12&val[u]=JNeutron',
         dataType: "script",
     });
 }
 </script>
 {/literal}
 
-<div id="main">Empty</div>
+<div id="main" class="main">Empty</div>

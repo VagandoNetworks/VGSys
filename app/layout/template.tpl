@@ -5,12 +5,13 @@
 	<title>{title}</title>
 {meta}
 {style}
-
+<link href="http://www.caplin.com/assets/css/fonts.css" rel="stylesheet">
 {literal}
     <style type="text/css">
       body {
         padding-top: 20px;
         padding-bottom: 40px;
+        font-family:'HelveticaNeueW01-55Roma',Helvetica,Arial,sans-serif;
       }
 
       /* Custom container */
