@@ -65,5 +65,17 @@
     {footer}
     </div> 
 {script}
+<script src="http://malsup.github.com/jquery.form.js"></script> 
+{literal}
+    <script> 
+        // wait for the DOM to be loaded 
+        $(document).ready(function() { 
+            // bind 'myForm' and provide a simple callback function 
+            $('#myForm').ajaxForm({
+                dataType: 'script',
+            }); 
+        }); 
+    </script> 
+{/literal}
 </body>
 </html>

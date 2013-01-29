@@ -81,11 +81,11 @@ class Core_Config {
     {
         if (is_array($var))
         {
-            $param = (isset($this->_params[$var[0]][$var[1]]) ? $this->_params[$var[0]][$var[1]] : Phpfox_Error::trigger('Falta: ' . $var[0] . '][' . $var[1]));
+            $param = (isset($this->_params[$var[0]][$var[1]]) ? $this->_params[$var[0]][$var[1]] : Core_Error::trigger('Falta: ' . $var[0] . '][' . $var[1]));
         }
         else
         {
-            $param = (isset($this->_params[$var]) ? $this->_params[$var] : Phpfox_Error::trigger('Falta: ' . $var));
+            $param = (isset($this->_params[$var]) ? $this->_params[$var] : Core_Error::trigger('Falta: ' . $var));
         }
         
         return $param;

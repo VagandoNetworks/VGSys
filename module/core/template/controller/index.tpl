@@ -18,3 +18,9 @@ function callAjax()
 {/literal}
 
 <div id="main" class="main">Empty</div>
+
+<form id="myForm" action="/ajax/blog/comment" method="post"> 
+    Name: <input type="text" name="name" /> <br />
+    Comment: <textarea name="comment"></textarea> <br />
+    <input type="submit" value="Submit Comment" class="btn" /> 
+</form>
