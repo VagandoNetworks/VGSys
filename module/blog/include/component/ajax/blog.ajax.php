@@ -14,24 +14,21 @@ class Blog_Component_Ajax_Blog extends Core_Ajax {
     
     public function comment()
     {
-        $validator = Core::getLib('form.validator');
+        $form = Core::getLib('form.validator')->setRules(Core::getService('blog')->getValidate());
         
-        $rules = array(
-            array('field' => 'name', 'rules' => 'required'),
-            array('field' => 'comment', 'rules' => 'required')
-        );
-        
-        $validator->setRules($rules);
-        
-        if ($validator->validate())
+        if ($form->validate())
         {
-            $data = $validator->getFields();
+            $data = $form->getFields();
             
-            print_r($data);
+            echo $data['comment'];
             
-            $this->html('#main', $this->getContent());
+            $this->html('#main', $this->getContent())->removeClass('#main', 'alert');
             return;
         }
+        
+        print_r($form->error());
+        $this->html('#main', $this->getContent());
+        $this->addClass('#main', 'alert');
     }
     
 }

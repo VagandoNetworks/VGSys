@@ -62,9 +62,9 @@ class Core_Request {
      * @param bool $xss
      * @return mixed
      */
-    public function get($name, $default = null, $xss = false)
+    public function get($name, $default = null)
     {
-        return (isset($this->_args[$name]) ? ($xss ? $this->xssClean($this->_args[$name]) : $this->_args[$name]) : $default);
+        return (isset($this->_args[$name]) ? $this->_args[$name] : $default);
     }
     
     // --------------------------------------------------------------------
@@ -124,21 +124,6 @@ class Core_Request {
         return (isset($_SERVER[$name]) ? $_SERVER[$name] : '');
     }
     
-    // --------------------------------------------------------------------
-    
-    /**
-     * Obtener un valor desde $_COOKIE
-     * 
-     * @access public
-     * @param string $name
-     * @param bool $xss
-     * @return string
-     */
-    public function cookie($name, $xss = false)
-    {
-        return (isset($_COOKIE[$name]) ? ($xss ? $this->xssClean($_COOKIE[$name]) : $_COOKIE[$name]) : '');
-    }
-    
     // -------------------------------------------------------------
     
     /**
@@ -180,22 +165,6 @@ class Core_Request {
         {
             $this->_args[$key] = $value;
         }
-    }
-    
-    // --------------------------------------------------------------------
-    
-    /**
-     * XSS Clean
-     * 
-     * TODO: Función provicional....
-     * 
-     * @access private
-     * @param string $str
-     * @return string
-     */
-    public function xssClean($str)
-    {
-        return str_replace(array("'", '"', '<', '>'), array("&#39;", "&quot;", '&lt;', '&gt;'), stripslashes($str));
     }
 
     // --------------------------------------------------------------------

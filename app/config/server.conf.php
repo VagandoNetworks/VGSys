@@ -10,3 +10,6 @@ $_CONF['db']['pconnect'] = true;
 
 $_CONF['core.host'] = 'www.vagando.com';
 $_CONF['core.folder'] = '/';
+
+$_CONF['core.cookie_path'] = '/';
+$_CONF['core.cookie_domain'] = 'vagando.com';

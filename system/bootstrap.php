@@ -85,3 +85,13 @@
  */
     Core::getLib('config')->set();
     
+/*
+ * ---------------------------------------------------------------
+ *  Iniciamos la sesión
+ * ---------------------------------------------------------------
+ */
+ 
+    // $_SESSION init
+    Core::getLib('session')->init();
+    
+    // Iniciar la sesión del usuario.

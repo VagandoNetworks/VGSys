@@ -237,4 +237,38 @@ final class Core {
         // Cargar plantilla
         $template->getLayout($template->displayLayout);
     }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Establecer una cookie
+     * 
+     * @access public
+     * @param string $name Nombre de la cookie
+     * @param string $value Valor de la cookie
+     * @param int $expire Segundos en los que expira.
+     * @return void
+     */
+    public static function setCookie($name, $value, $expire = 0)
+    {
+        $name = Core::getParam('core.cookie_prefix') . $name;
+        
+        setcookie($name, $value, (($expire != 0 || $expire != -1) ? $expire : (CORE_TIME + 60*60*24*$expire)), Core::getParam('core.cookie_path'), Core::getParam('core.cookie_domain'));
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Leer una cookie
+     * 
+     * @access public
+     * @param string $name Nombre de la cookie
+     * @return string
+     */
+    public static function getCookie($name)
+    {
+        $name = Core::getParam('core.cookie_prefix') . $name;
+        
+        return (isset($_COOKIE[$name]) ? $_COOKIE[$name] : '');
+    }
 }

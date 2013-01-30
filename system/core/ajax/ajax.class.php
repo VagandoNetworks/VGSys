@@ -154,7 +154,7 @@ class Core_Ajax {
 		$html = str_replace('\\', '\\\\', $html);
 		$html = str_replace('"', '\"', $html);
         
-        $this->call("$('" . $id . "').append(\"" . $html . "\")" . $extra . ";");
+        $this->call("$('" . $id . "').html(\"" . $html . "\")" . $extra . ";");
         
         return $this;
     }
