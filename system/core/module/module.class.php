@@ -94,6 +94,12 @@ class Core_Module {
         $this->_module = $router->getModule();
         $this->_controller = $router->getController();
         
+        // Sobre escribir el index para mostrar el index para miembros o para visitantes.
+        if ($this->_module == Core::getParam('core.module_core') && $this->_controller == 'index')
+        {
+            $this->_controller = (Core::isUser() ? 'index-member' : 'index-visitor');
+        }
+        
         return;
     }
     
@@ -285,6 +291,30 @@ class Core_Module {
         $this->_services[$class] = Core::getObject($module . '_service_' . $service);
         
         return $this->_services[$class];
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener nombre del módulo y controlador
+     * 
+     * @access public
+     * @param bool $controller
+     * @return string
+     */
+    public function getModuleName($type = null)
+    {
+        switch ($type)
+        {
+            case 'string':
+                return $this->_module . ' ' . $this->_controller;
+            break;
+            case 'array':
+                return array($this->_module, $this->_controller);
+            break;
+            default:
+                return $this->_module;
+        }
     }
     
     // --------------------------------------------------------------------

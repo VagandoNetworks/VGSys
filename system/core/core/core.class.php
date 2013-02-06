@@ -216,6 +216,58 @@ final class Core {
     // --------------------------------------------------------------------
     
     /**
+     * Obtener una frase
+     * 
+     * @access public
+     * @param string $param
+     * @param array $params
+     * @return string
+     */
+    public static function getPhrase($param, $params = array())
+    {
+        return Core::getLib('locale')->getPhrase($param, $params);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener dirección IP
+     * 
+     * @see Core_Request::getIp()
+     * @param bool $returnNum Retornar como número.
+     * @return mixed
+     */
+    public static function getIp($returnNum = false)
+    {
+        return Core::getLib('request')->getIp($returnNum);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Se utiliza para comprobar si un usuario está conectado o no. Al pasar
+     * el primer argumento como TRUE también podemos hacer una redirección
+     * automática para guiar al usuario iniciar sesión primero antes de usar una función.
+     * 
+     * @access public
+     * @param bool $redirect
+     * @return mixed
+     */
+    public static function isUser($redirect = false)
+    {
+        $isUser = false;
+        
+        if ( ! $isUser && $redirect)
+        {
+            echo 'TODO:Redirigir.';
+        }
+        
+        return $isUser;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
      * Run
      */
     public static function run()
@@ -223,19 +275,76 @@ final class Core {
         $template = Core::getLib('template');
         $module = Core::getLib('module');
         
+        // Definimos el controlador
         $module->setController();
-        
-        $module->getController();
         
         // Asignamos cosas
         $template->meta(array(
             'description' => 'Descripción del sitio',
             'keywords' => 'algo, coma, punto, come',
-            'algo' => 'Se repute?'
-        ))->css('bootstrap.css')->js(array('jquery.min.js', 'bootstrap.min.js'));
+        ))->css(array('bootstrap.css', 'layout.css'))->js(array('jquery.min.js', 'bootstrap.min.js', 'common.js', 'main.js', 'ajax.js'));
+        
+        // Cargar controlador y accionarlo.
+        $module->getController();
         
         // Cargar plantilla
         $template->getLayout($template->displayLayout);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener nombre del módulo y controlador actual
+     * 
+     * @access public
+     * @param bool $controller
+     * @return string
+     */
+    public static function getModuleName($type = null)
+    {
+        return Core::getLib('module')->getModuleName($type);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Añadir un mensaje público que puede ser utilizado más tarde para mostrar información al usuario.
+     * Mensaje se almacena en una $_SESSION de modo que el mensaje puede ser visto después de recargar
+     * la página en caso de que se utilice con un formulario HTML.
+     * 
+     * @see Core_Session::set()
+     * @param string $message
+     * @return void
+     */
+    public static function addMessage($message)
+    {
+        Core::getLib('session')->set('message', $message);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener el mensaje público que configuramos antes.
+     * 
+     * @see Core_Session::get()
+     * @return string
+     */
+    public static function getMessage()
+    {
+        return Core::getLib('session')->get('message');
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Borrar el mensaje público que pusimos antes.
+     * 
+     * @see Core_Session::remove()
+     * @return void
+     */
+    public static function clearMessage()
+    {
+        Core::getLib('session')->remove('message');
     }
     
     // --------------------------------------------------------------------
@@ -270,5 +379,25 @@ final class Core {
         $name = Core::getParam('core.cookie_prefix') . $name;
         
         return (isset($_COOKIE[$name]) ? $_COOKIE[$name] : '');
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Datos del debug
+     * 
+     * @access public
+     * @return string
+     */
+    public static function getDebug()
+    {
+        list($sm, $ss) = explode(' ', START_TIME);
+        list($em, $es) = explode(' ', microtime());
+        
+        $return = number_format(($em + $es) - ($sm + $ss), 3) . 's';
+        
+        $return .= ' &bull; ' . round((memory_get_usage() - START_MEM) / 1024, 2) . 'kb';
+        
+        return $return;
     }
 }

@@ -64,6 +64,40 @@ class Core_Template {
      */
     private $_js = array();
     
+    /**
+     * Javascript vars
+     * 
+     * @var array
+     */
+    private $_jsVars = array();
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->_jsVars['params'] = array(
+            'url' => Core::getParam('core.path'),
+            'ajaxUrl' => Core::getParam('core.path') . 'ajax/',
+        );
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Plantilla que será cargada
+     * 
+     * @access public
+     * @param string $layout
+     * @return Template
+     */
+    public function setLayout($layout)
+    {
+        $this->displayLayout = $layout;
+        
+        return $this;
+    }
+    
     // --------------------------------------------------------------------
     
     /**
@@ -100,6 +134,12 @@ class Core_Template {
      */
     public function title($title)
     {
+        // Podemos usar farses.
+        if (strpos($title, '.') !== false)
+        {
+            $title = Core::getPhrase($title);
+        }
+        
         $this->_title[] = $title;
         
         $this->meta('og:site_name', Core::getParam('core.site_title'));
@@ -196,6 +236,35 @@ class Core_Template {
     // --------------------------------------------------------------------
     
     /**
+     * Agregar una variable Javascript
+     * 
+     * @access public
+     * @param string $type Tipo de variable
+     * @param array $var Variable
+     * @param string $val Valor
+     * @return Template
+     */
+    public function jsVar($type, $var, $val = '')
+    {
+        if ( in_array($type, array('params', 'lang')))
+        {
+            if ( ! is_array($var))
+            {
+                $var  = array($var => $val);
+            }
+            
+            foreach ($var as $key => $val)
+            {
+                $this->_jsVars[$type][$key] = $val; 
+            }
+        }
+        
+        return $this;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
      * Crear título del sitio
      * 
      * @access public
@@ -246,6 +315,7 @@ class Core_Template {
     public function getStyles()
     {
         $styles = '';
+        
         foreach ($this->_css as $css)
         {
             $styles .= "\n\t" . '<link href="'. Core::getParam('core.url_static_css') . $css .'" rel="stylesheet">';
@@ -272,6 +342,34 @@ class Core_Template {
         
         return $scripts;
     }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener las variables JavaScript
+     * 
+     * @access public
+     * @return string
+     */
+    public function getVars()
+    {
+        $vars = "\n\t<script type=\"text/javascript\">";
+        foreach ($this->_jsVars as $name => $_vars)
+        {
+            $vars .= "\n\t\tvar " . $name . ' = {';
+            foreach ($_vars as $key => $val)
+            {
+                $vars .= "'{$key}' : ". (is_bool($val) ? $val : "'{$val}'") . ',';
+            }
+            $vars = rtrim($vars, ',') . "};\n";
+        }
+        $vars .=  "\t</script>";
+        
+        return $vars;
+    }
+    
+    // --------------------------------------------------------------------
+    
     
     /**
      * Cargar la plantilla actual.
@@ -302,7 +400,12 @@ class Core_Template {
      */
     public function getLayoutFile($name)
     {
-        return LAYOUT_PATH . $name . TPL_SUFFIX;
+        if ( file_exists(LAYOUT_PATH . $name . TPL_SUFFIX))
+        {
+            return LAYOUT_PATH . $name . TPL_SUFFIX;
+        }
+        
+        Core_Error::trigger('La plantilla no se encuentra: ' . $this->displayLayout);
     }
     
     // --------------------------------------------------------------------

@@ -108,7 +108,7 @@ class Core_Database_Driver_Mysql extends Core_Database_Driver {
         
         if ( ! $result)
         {
-            show_error('Query error: ' . $sql);
+            Core_Error::trigger('Query error: ' . $sql . '<br>' . $this->error());
         }
         
         return $result;
@@ -122,7 +122,7 @@ class Core_Database_Driver_Mysql extends Core_Database_Driver {
      * @access public
      * @return int
      */
-    public function get_last_id()
+    public function getLastId()
     {
         return @mysql_insert_id($this->conn_id);
     }
@@ -151,7 +151,7 @@ class Core_Database_Driver_Mysql extends Core_Database_Driver {
      * @param bool $assoc
      * @return array
      */
-    protected function _get_row($sql, $assoc = true)
+    protected function _getRow($sql, $assoc = true)
     {
         // Ejecutamos la consulta
         $result = $this->query($sql);
@@ -172,7 +172,7 @@ class Core_Database_Driver_Mysql extends Core_Database_Driver {
      * @param bool $assoc
      * @return array
      */
-    protected function _get_rows($sql, $assoc = true)
+    protected function _getRows($sql, $assoc = true)
     {
         $rows = array();
         $assoc = ($assoc ? MYSQL_ASSOC : MYSQL_NUM);

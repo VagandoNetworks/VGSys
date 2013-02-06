@@ -172,9 +172,9 @@ abstract class Core_Database_Driver {
         $this->query['where'] = '';
         if ( is_array($conds) && count($conds) > 0)
         {
-            foreach ($conds as $value)
+            foreach ($conds as $field => $value)
             {
-                $this->query['where'] .= $value . ' ';
+                $this->query['where'] .= 'AND ' . $field . ' = ' . $this->escape($value);
             }
             
             $this->query['where'] = 'WHERE ' . trim(preg_replace('/^(AND|OR)(.*?)/i', '', trim($this->query['where'])));
@@ -420,7 +420,7 @@ abstract class Core_Database_Driver {
             }
             else
             {
-                $values .= "'". ($escape ? $this->escape($val) : $val) . "', ";
+                $values .= ($escape ? $this->escape($val) : $val) . ", ";
             }
         }
         $values = rtrim(trim($values), ',');
@@ -429,7 +429,7 @@ abstract class Core_Database_Driver {
         
         if ($result = $this->query($sql))
         {
-            return $this->get_last_id();
+            return $this->getLastId();
         }
         
         return 0;
@@ -459,7 +459,7 @@ abstract class Core_Database_Driver {
                 $val = $val[1];
             }
             
-            $sets = "{$col} {$cmd} " . (is_null($val) ? 'NULL' : ($escape ? "'" . $this->escape($val) . "'" : $val)) . ', ';
+            $sets = "{$col} {$cmd} " . (is_null($val) ? 'NULL' : ($escape ? $this->escape($val) : $val)) . ', ';
         }
         $sets[strlen($sets) - 2] = ' ';
         

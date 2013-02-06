@@ -1,0 +1,153 @@
+.navbar-fixed-top .container {
+    width: 837px;
+}
+.page-container {
+    position: relative;
+    width: 837px;
+    min-height: 100%;
+    padding: 52px 14px 15px;
+    margin: 0 auto;
+}
+.page-canvas {
+    border: 1px solid #eee;
+    border: 1px solid rgba(0,0,0,.1);
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+.signin-wrapper, .signup-wrapper, .resend-password-wrapper {
+    margin: 0 auto 10px;
+    width: 585px;
+    clear: both;
+}
+.signin-wrapper h1, .signup-wrapper h1, .resend-password-wrapper h1
+{
+    padding: 40px 0 20px 0;
+    clear: both;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    margin: 0;
+}
+.signup fieldset, .signin fieldset, .resend-password fieldset {
+    margin-bottom: 16px;
+}
+.signup label, .signin label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 3px;
+    color: #333;
+}
+#signup-form .holding, #signin-form .holding {
+    margin-bottom: 15px;
+    position: relative;
+    overflow: visible;
+}
+#signin-form fieldset .holding input {
+    width: 290px;
+    margin: 0;
+}
+#signup-form .textbox .holding input {
+    width: 382px;
+    margin: 0;
+}
+#signup-form .textbox .holding input.full_name {
+    width: 182px;
+}
+#signup-form div.sidetip {
+    position: absolute;
+    left: 402px;
+    width: 260px;
+}
+#signup-form .textbox div.sidetip {
+    margin-top: 5px;
+}
+#signup-form div.sidetip p {
+    font-size: 13px;
+    line-height: 16px;
+    padding-left: 18px;
+    background-repeat: no-repeat;
+    background-position: center left;
+    color: gray;
+    display: none;
+}
+#signup-form div.sidetip p.active {
+    display: block;
+}
+#signup-form div.sidetip p.success {
+    background-image: url(../img/accept.png);
+    color: #390;
+}
+#signup-form div.sidetip p.error {
+    background-image: url(../img/error.png);
+    color: #c33;
+}
+#signup-form div.sidetip p.checking {
+    background-image: url(../img/spinner-small.gif);
+}
+#signup-form .password .score {
+    display: none;
+    position: absolute;
+    margin-top: -40px;
+    margin-left: 334px;
+}
+#signup-form .password .score span {
+    width: 50px;
+    height: 8px;
+    display: inline-block;
+    overflow: hidden;
+    background-color: #eee;
+    vertical-align: middle;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+#signup-form .password .score .fill {
+    display: block;
+    height: 8px;
+    width: 25px;
+    background-color: #6ec02a;
+}
+#signup-form .tos .holding {
+    width: 400px;
+}
+.signin .subchck {
+    display: inline-block;
+    margin-bottom: 0;
+    vertical-align: top;
+}
+.signin .remember {
+    margin-left: 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 30px;
+}
+.signin .remember input {
+    margin: -3px 3px 0 0;
+}
+.input_day {
+    width: 80px;
+    margin-right: 10px;
+}
+.input_month {
+    width: 195px;
+    margin-right: 10px;
+}
+.input_year {
+    width: 100px;
+}
+
+#signup-form .holding.gender label {
+    float: left;
+    margin-right: 15px;
+}
+#signup-form .holding.gender label input {
+    margin: -1px 0 0;
+}
+.help-text-inline {
+    position: relative;
+    left: 0;
+    top: 0;
+    display: inline-block;
+}

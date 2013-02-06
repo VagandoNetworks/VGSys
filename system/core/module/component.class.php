@@ -29,8 +29,8 @@ class Core_Component {
      */
     private $_objects = array(
         'layout' => 'template',
-        'db' => 'database',
         'request' => 'request',
+        'url' => 'url'
     );
     
     /**

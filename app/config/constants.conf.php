@@ -21,6 +21,9 @@
     // Ruta del núcleo.
     define('CORE_PATH', SYS_PATH . 'core' . DS);
     
+    // Ruta de las librerías
+    define('LIB_PATH', SYS_PATH . 'library' . DS);
+    
 /*
  * ---------------------------------------------------------------
  *  TMP & CACHE
@@ -50,6 +53,9 @@
     
     // Ruta de los módulos
     define('MOD_PATH', ROOT . DS . 'module' . DS);
+    
+    // Ruta de los lenguajes
+    define('MOD_LANG', 'include' . DS . 'locale' . DS);
     
     // Componentes de un módulo
     define('MOD_COMPONENT', 'include' . DS . 'component');

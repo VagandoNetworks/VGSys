@@ -136,4 +136,128 @@ class Core_Url {
         
         return $val;
     }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Enviar al usuario a una URL
+     * 
+     * @access public
+     * @param string $url
+     * @param array $params
+     * @param string $message
+     * @return void
+     */
+    public function send($url, $params = array(), $message = null)
+    {
+        if ($message !== null)
+        {
+            Core::addMessage($message);
+        }
+        
+        $this->_send((preg_match("/(http|https):\/\//i", $url) ? $url : $this->makeUrl($url, $params)));
+        exit;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Crear un enlace interno
+     * 
+     * @access public
+     * @param string $url
+     * @param array $params
+     * @return string
+     */
+    public function makeUrl($url, $params = array())
+    {
+        // URL?
+        if (preg_match('/http:\/\//i', $url))
+        {
+            return $url;
+        }
+        
+        // Actual
+        if ($url == 'current')
+        {
+            $url = '';
+            foreach ($this->segments as $segment)
+            {
+                $url .= $segment . '.';
+            }
+        }
+        
+        if ( ! is_array($params))
+        {
+            $params = array();
+        }
+        
+        $url = trim($url, '.');
+        $urls = '';
+        
+        $parts = explode('.', $url);
+        
+        $urls .= Core::getParam('core.path');
+        $urls .= $this->_makeUrl($parts, $params);
+        
+        return $urls;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Enviar al usuario a una nueva ubicación.
+     * 
+     * @access private
+     * @param string $url
+     * @return void
+     */
+    private function _send($url)
+    {
+        // Liberámos buffer
+        ob_clean();
+        
+        // AJAX
+        if (defined('IS_AJAX'))
+        {
+            echo 'window.location.href = \'' . $url . '\';';
+            exit;
+        }
+        
+        // Enviamos...
+        header('Location: ' . $url);
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Formar URL
+     * 
+     * @access private
+     * @param array $parts
+     * @param array $params
+     * @return string
+     */
+    private function _makeUrl(&$parts, &$params)
+    {
+        $urls = '';
+        // Primero las "subcarpetas"
+        foreach ($parts as $part)
+        {
+            $urls .= $part . '/';
+        }
+        
+        // Parámetros
+        if (count($params))
+        {
+            $urls .= '?';
+            foreach ($params as $key => $value)
+            {
+                $urls .= $key . '=' . $value . '&';
+            }
+            $urls = trim($urls, '&');
+        }
+        
+        return $urls;
+    }
 }

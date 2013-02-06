@@ -74,9 +74,10 @@ class Core_Parse_Input {
      * 
      * @access public
      * @param string $txt
+     * @param int $shorten
      * @return string
      */
-    public function clean($txt)
+    public function clean($txt, $shorten = null)
     {
         $txt = $this->_htmlspecialchars($txt);
         
@@ -85,8 +86,50 @@ class Core_Parse_Input {
 		$txt = str_replace('\\', '&#92;', $txt);
         
         //
+		if ($iShorten !== null)
+		{			
+			$txt = $this->_shorten($txt, $shorten);
+		}	
+        
+        //
         return $txt;
     }
+    
+	private function _shorten($txt, $letters)
+	{
+		if ( ! preg_match('/(&#[0-9]+;)/', $txt))
+		{
+			return substr($txt, 0, $letters);
+		}
+        
+		$out = '';
+		$outLen = 0;
+		$post = 0; 
+		$txtLen = strlen($txt);
+		for ($post; $post < $txtLen && $outLen <= $letters; $post++)
+		{
+			if ($txt[$post] == '&')
+			{
+				$end = strpos($txt, ';', $post) + 1;
+				$temp = substr($txt, $post, $end - $post);
+				if (preg_match('/(&#[0-9]+;)/', $temp))
+				{
+					$sTmp = $out;
+					$out .= $temp; // add the entity altogether
+					if (strlen($out) > $letters)
+					{
+						return $sTmp;
+					}
+					$outLen++; // increment the length of the returning string
+					$post = $end-1; // move the pointer to skip the entity in the next run
+					continue;
+				}
+			}
+			$out .= $txt[$post];
+			$outLen++;
+		}
+		return $out;
+	}
     
 	/**
 	 * Limpia un título para poder ser usado en una URL.

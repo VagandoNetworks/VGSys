@@ -42,6 +42,7 @@ class Core_Form_Validator {
     private $_errorMessage = array(
         'required' => 'El campo %s es requerido.',
         'matches' => 'Las contraseñas no son iguales.',
+        'is_unique' => 'Este valor ya se encuentra registrado.',
         'is_valid' => array(
             'user_name' => 'El nombre de usuario no es válido.',
             'email' => 'El correo enviado no es válido.'
@@ -225,7 +226,7 @@ class Core_Form_Validator {
                 // Buscamos el mensaje de error
                 if ( ! isset($this->_errorMessage[$rule]))
                 {
-                    $line = 'No podemos determinar el error.';
+                    $line = 'No podemos determinar el error.' . $rule;
                 }
                 else
                 {
@@ -361,11 +362,11 @@ class Core_Form_Validator {
 	 */
 	public function is_unique($str, $field)
 	{
-		list($table, $field)=explode('.', $field);
+		list($table, $field) = explode('.', $field);
         
-        $exists = Core::getLib('database')->select('COUNT(*)')->from($table)->where(array($field => $str))->execute('field');
+        $exists = Core::getLib('database')->select('COUNT(*)')->from($table)->where(array($field => $str))->exec('field');
 		
-		return $exists === 0;
+		return ($exists == 0) ? true : false;
     }
 
 	// --------------------------------------------------------------------
@@ -387,7 +388,7 @@ class Core_Form_Validator {
 
 		if (function_exists('mb_strlen'))
 		{
-			return (mb_strlen($str) < $val) ? false : false;
+			return (mb_strlen($str) < $val) ? false : true;
 		}
 
 		return (strlen($str) < $val) ? false : true;
@@ -412,10 +413,10 @@ class Core_Form_Validator {
 
 		if (function_exists('mb_strlen'))
 		{
-			return (mb_strlen($str) > $val) ? FALSE : TRUE;
+			return (mb_strlen($str) > $val) ? false : true;
 		}
 
-		return (strlen($str) > $val) ? FALSE : TRUE;
+		return (strlen($str) > $val) ? false : true;
 	}
 
 	// --------------------------------------------------------------------

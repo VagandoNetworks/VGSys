@@ -1,11 +1,26 @@
 <?php
-
+/**
+ * Core Index Controller
+ * 
+ * Controlador principal.
+ * 
+ * @package     VGSys
+ * @subpackage  Core
+ * @category    Library
+ * @author      Ivan Molina Pavana <montemolina@live.com>
+ */
 class Core_Component_Controller_Index extends Core_Component {
     
+    /**
+     * Procesar controlador.
+     * 
+     * Este método es llamado por defecto.
+     * 
+     * @access public
+     * @return mixed
+     */
     public function process()
     {
-        $this->layout->title('Index')->set('var', 'JNeutron');
-        
-        
+        // Este controlador no es requerido
     }
 }

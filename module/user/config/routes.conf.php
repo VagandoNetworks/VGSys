@@ -1,0 +1,3 @@
+<?php
+
+$route['user'] = 'index';

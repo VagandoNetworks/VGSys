@@ -30,6 +30,13 @@ class Core_Request {
     private $_args = array();
     
     /**
+     * Dirección IP
+     * 
+     * @var string
+     */
+    private $_ipAddress = null;
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -130,18 +137,44 @@ class Core_Request {
      * Obtener dirección IP
      * 
      * @access public
+     * @param bool $returnNum Retornar como números.
      * @return string
      */
-    public function ip()
+    public function getIp($returnNum = false)
     {
-        $ipAddress = $this->getServer('REMOTE_ADDR');
-        
-        if ( ! filter_var($ipAddress, FILTER_VALIDATE_IP))
+        if ($this->_ipAddress && !$returnNum)
         {
-            $ipAddress = '0.0.0.0';
+            return $this->_ipAddress;
         }
+ 		
+ 		$this->_ipAddress = $_SERVER['REMOTE_ADDR'];
+ 
+ 		if (isset($_SERVER['HTTP_CLIENT_IP']))
+ 		{
+ 			$this->_ipAddress = $_SERVER['HTTP_CLIENT_IP'];
+ 		}
+ 		elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) AND preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches))
+ 		{
+ 			foreach ($matches[0] AS $IP)
+ 			{
+ 				if (!preg_match("#^(10|172\.16|192\.168)\.#", $IP))
+ 				{
+ 					$this->_ipAddress = $IP;
+ 					break;
+ 				}
+ 			}
+ 		}
+ 		elseif (isset($_SERVER['HTTP_FROM']))
+ 		{
+ 			$this->_ipAddress = $_SERVER['HTTP_FROM'];
+ 		}
+ 		
+ 		if ($bReturnNum === true)
+ 		{
+ 			$this->_ipAddress = str_replace('.', '', $this->_ipAddress);
+ 		}
         
-        return $ipAddress;
+        return $this->_ipAddress;
     }
     
     // --------------------------------------------------------------------

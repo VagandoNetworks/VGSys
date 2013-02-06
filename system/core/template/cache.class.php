@@ -323,6 +323,54 @@ class Core_Template_Cache {
 				list (,$literal) = each($this->_literals);
 				return "<?php echo '" . str_replace("'", "\'", $literal) . "'; ?>\n";
 				break;
+            case 'lang':
+                $args = $this->_parseArgs($arguments);
+                if ( ! $args['var'])
+                {
+                    return '';
+                }
+                $var = $args['var'];
+                unset($args['var']);
+                $array = '';
+                if (count($args))
+                {
+                    $array = ', array(';
+                    foreach ($args as $key => $value)
+                    {
+                        $array .= '\'' . $key . '\' => ' . $value . ',';
+                    }
+                    $array = rtrim($array, ',') . ')';
+                }
+                return '<?php echo Core::getPhrase(' . $var . $array .'); ?>';
+                break;
+            case 'param':
+                $args = $this->_parseArgs($arguments);
+                return '<?php echo Core::getParam(\'' . $this->_removeQuote($args['var']) . '\'); ?>';
+                break;
+            case 'img':
+                $args = $this->_parseArgs($arguments);
+                return "<?php echo '<img src=\"" . Core::getParam('core.url_static_img') . $this->_removeQuote($args['src']) . "\" />'; ?>";
+                break;
+            case 'url':
+                $args = $this->_parseArgs($arguments);
+                if ( ! $args['link'])
+                {
+                    return '';
+                }
+                $link = $args['link'];
+                unset($args['link']);
+                $array = '';
+                if (count($args))
+                {
+                    $array = ', array(';
+                    foreach ($args as $key => $value)
+                    {
+                        $array .= '\'' . $key . '\' => ' . $value . ',';
+                    }
+                    $array = rtrim($array, ',') . ')';
+                }
+                return '<?php echo Core::getLib(\'url\')->makeUrl(' . $link . $array .'); ?>';
+                break;
             /** Funciones del layout **/
 			case 'title':
 				return '<?php echo $this->getTitle(); ?>';
@@ -336,15 +384,41 @@ class Core_Template_Cache {
             case 'script':
 				return '<?php echo $this->getScripts(); ?>';
 				break;
+            case 'script_vars':
+                return '<?php echo $this->getVars();?>';
+                break;
+            /** Funciones Form **/
+            case 'html_select_date':
+                $args = $this->_parseArgs($arguments);
+                if (count($args))
+                {
+                    $array = ', array(';
+                    foreach ($args as $key => $value)
+                    {
+                        $array .= '\'' . $key . '\' => ' . $value . ',';
+                    }
+                    $array = rtrim($array, ',') . ')';
+                }
+                return '<?php echo Core::getLib(\'form.helper\')->selectDate(' . $array . ');?>';
+            break;
             //
+            case 'module':
+                return Core::getModuleName('string');
+            break;
+            case 'topbar':
+                return '<?php Core::getBlock(\'core.template-topbar\');?>';
+                break;
 			case 'content':
                 $content = '';
-				$content .= '<?php Core::getLib(\'module\')->getControllerTemplate(); ?>';
+				$content .= '<?php Core::getLib(\'module\')->getControllerTemplate();?>';
 				return $content;
 				break;
             case 'footer':
-				return '<?php Core::getBlock(\'core.footer\'); ?>';
+				return '<?php Core::getBlock(\'core.template-footer\'); ?>';
 				break;
+            case 'debug':
+                return '<?php echo Core::getDebug(); ?>';
+                break;
         }
     }
     
