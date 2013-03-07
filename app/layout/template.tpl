@@ -7,12 +7,19 @@
 {style}
 </head>
 
-<body class="{module}">
-    {topbar}
-    <div id="wrapper" class="container">
+<body>
+    <header>
+        {header}
+    </header>
+    <div class="wrapper">
+        <div class="container">
         {content}
-        {footer}
+        </div>
     </div>
+    <footer>
+        {footer}
+    </footer>
+    <div id="dialog"></div>
 {script_vars}
 {script}
 </body>

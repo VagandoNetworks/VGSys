@@ -21,7 +21,7 @@ class Core_Component_Controller_Index_Visitor extends Core_Component {
     {
         $this->layout->title(Core::getPhrase('core.welcome'))
             ->setLayout('welcome')
-            ->css('welcome.css');
+            ->css('module/welcome.css');
             
         $bgImage = mt_rand(1, 2);
         $this->layout->set('bgimage', $bgImage);

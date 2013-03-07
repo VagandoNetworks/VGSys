@@ -95,21 +95,32 @@ class Core_Ajax {
         
         $url->fetchURIString();
         $url->explodeSegments();
+        $url->reindexSegments();
         
         // Siemrpe deben existir 3 segmentos no más ni menos.
         // /ajax/módulo/método/
-        if (count($url->segments) != 3)
+        $totalSegments = count($url->segments);
+        if ($totalSegments < 3)
         {
             Core_Error::trigger('Error: La solicitud no es válida.');
         }
         
-        // Asignamos el módulo y método solicitado.
-        $module = $url->segments[1];
-        $method = $url->segments[2];
+        // Asignamos el módulo
+        $module = $url->getSegment(2);
+        
+        // Asignamos controladores
+        for ($i = 3; $i < $totalSegments; $i++)
+        {
+            $module .= '.' . $url->getSegment($i);
+        }
+        
+        // Asignamos el método
+        $method = $url->getSegment($totalSegments);
         
         // Cargamos el componente
         if ($object = Core::getLib('module')->getComponent($module, array(), 'ajax'))
         {
+            $method = str_replace('.php', '', $method);
             $object->$method();
             
             return true;
@@ -265,9 +276,9 @@ class Core_Ajax {
 		if ($clean)
 		{
 			$content = str_replace(array("\n", "\t"), '', $content);					
-			$content = str_replace('\\', '\\\\', $content);
-			$content = str_replace("'", "\\'", $content);			
-			$content = str_replace('"', '\"', $content);
+			//$content = str_replace('\\', '\\\\', $content);
+			//$content = str_replace("'", "\'", $content);
+			//$content = str_replace('"', '\"', $content);
 		}
         
 		return $content;

@@ -72,6 +72,13 @@ class Core_Template {
     private $_jsVars = array();
     
     /**
+     * Plugins cargados
+     * 
+     * @var array
+     */
+    private static $_plugins = array();
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -246,7 +253,7 @@ class Core_Template {
      */
     public function jsVar($type, $var, $val = '')
     {
-        if ( in_array($type, array('params', 'lang')))
+        if ( in_array($type, array('params', 'lang', 'user')))
         {
             if ( ! is_array($var))
             {
@@ -366,6 +373,52 @@ class Core_Template {
         $vars .=  "\t</script>";
         
         return $vars;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Cargar plugins
+     * 
+     * @access public
+     * @param array $plugins
+     * @return void
+     */
+    public function loadPlugins($plugins = array())
+    {
+        foreach ($plugins as $plugin)
+        {
+            list($_type, $_name) = $plugin;
+            
+            $_plugin = self::$_plugins[$_type][$_name];
+            
+            if (isset($_plugin))
+            {
+                continue;
+            }
+            
+            // Ruta del plugin
+            $_plugin_file = PLUGIN_PATH . $_type . DS . $_name . '.php';
+            
+            if ( ! file_exists($_plugin_file))
+            {
+                Core_Error::trigger('No se pudo localizar el plugin: ' . str_replace(PLUGIN_PATH, '', $_plugin_file));
+                continue;
+            }
+            
+            // Incluir archivo
+            include $_plugin_file;
+            
+            $_plugin_func = 'template_' . $_type . '_' . $_name;
+            
+            if ( ! function_exists($_plugin_func))
+            {
+                Core_Error::trigger('El plugin no puede ser aplicado: ' . $_plugin_func . '();');
+                continue;
+            }
+            
+            self::$_plugins[$_type][$_name] = true;
+        }
     }
     
     // --------------------------------------------------------------------

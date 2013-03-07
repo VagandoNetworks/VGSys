@@ -111,6 +111,9 @@ class Core_Database_Driver_Mysql extends Core_Database_Driver {
             Core_Error::trigger('Query error: ' . $sql . '<br>' . $this->error());
         }
         
+        // Contar consultas...
+        $this->total++;
+        
         return $result;
     }
     

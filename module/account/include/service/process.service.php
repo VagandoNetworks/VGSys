@@ -9,6 +9,13 @@
  */
 class Account_Service_Process extends Core_Service {
     
+    /**
+     * Agregar nuevo usuario
+     * 
+     * @access public
+     * @param array $vars Variables del usuario
+     * @return bool
+     */
     public function add($vars)
     {
         if ( ! Core::getParam('user.allow_user_registration'))
@@ -29,7 +36,7 @@ class Account_Service_Process extends Core_Service {
         $vars['full_name'] = $vars['first_name'] . ' ' . $vars['last_name'];
         
         // Validamos el nombre
-        if ( preg_match('/^([-a-z0-9_- ])+$/i', $vars['full_name']))
+        if ( ! preg_match('/^([-a-z0-9_- ])+$/i', $vars['full_name']))
         {
             return Core_Error::set('signup.invalid_full_name');
         }
@@ -39,7 +46,7 @@ class Account_Service_Process extends Core_Service {
             'full_name' => $parseInput->clean($vars['full_name'], 255),
             'password' => Core::getLib('hash')->setHash($vars['password'], $salt),
             'password_salt' => $salt,
-            'email' => $vars['email'],
+            'email' => strtolower($vars['email']),
             'birthday' => Core::getService('user')->buildAge($vars['day'], $vars['month'], $vars['year']),
             'gender' => (($vars['gender'] == 1) ? 1 : 2),
             'joined' => CORE_TIME,
@@ -70,25 +77,35 @@ class Account_Service_Process extends Core_Service {
         // TODO: Enviar email de verificación => user.verify_email_at_signup
         if (Core::getParam('user.verify_email_at_signup'))
         {
-            // Generamos un código de 10 dígitos
-            $hash = Core::getLib('hash')->setRandomHash($id . $vars['email'] . $vars['password']);
-            
-            // Insertamos el código
-            $this->db->insert('user_verify', array('user_id' => $id, 'hash_code' => $hash, 'email' => $vars['email']));
-            
-            // Enviamos el correo...
-            Core::getLib('mail')
-                ->to($vars['email'])
-                ->subject(array('email.verify_your_email_subject', array('site_title' => Core::getParam('core.site_title'))))
-                ->message(array('email.verify_your_email_content', array(
-                    'site_title' => Core::getParam('core.site_title'),
-                    'link' => Core::getLib('url')->makeUrl('account.verify', array('key' => $hash)),
-                        )
-                    )
-                )->send();
+            Core::getService('account.verify')->send($id, $vars['email']);
         }
         
         //
         return true;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Cambiar contraseña de usuario
+     * 
+     * @access public
+     * @param int $user_id
+     * @param string $password
+     * @return void
+     */
+    public function changePassword($user_id, $password)
+    {
+        $email = $this->db->select('email')->from('user')->where('user_id = ' . (int) $user_id)->exec('field');
+        
+        if ($email)
+        {
+            // Generamos...
+            $salt = Core::getLib('hash')->getSalt();
+            $password = Core::getLib('hash')->setHash($password, $salt);
+            
+            // Actualizamos
+            $this->db->update('user', array('password' => $password, 'password_salt' => $salt, 'last_password_change' => CORE_TIME), 'user_id = ' . (int) $user_id);
+        }
     }
 }

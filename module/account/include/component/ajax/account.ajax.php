@@ -58,13 +58,15 @@ class Account_Component_Ajax_Account extends Core_Ajax {
                 // Agregamos usuario
                 if (Core::getService('account.process')->add($this->request->getRequest()))
                 {
-                    // TODO: Ir a que parte?
                     if (Core::getParam('user.verify_email_at_signup'))
                     {
+                        // Vamos a que verifique su email
+                        Core::getLib('session')->set('email', $this->request->get('email'));
                         $this->call('window.location.href = \'' . Core::getLib('url')->makeUrl('account.verify') . '\';');
                     }
                     else
                     {
+                        // Iniciamos sesión
                         $this->call('window.location.href = \'' . Core::getLib('url')->makeUrl('account.login') . '\';');
                     }
                     

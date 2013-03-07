@@ -91,7 +91,7 @@ class Core_Url {
     public function reindexSegments()
     {
         array_unshift($this->segments, NULL);
-        unset($this->segments);
+        unset($this->segments[0]);
     }
     
     // --------------------------------------------------------------------
@@ -118,6 +118,20 @@ class Core_Url {
     // --------------------------------------------------------------------
     
     /**
+     * Obtener un segmento de la URI
+     * 
+     * @access public
+     * @param int $index
+     * @return string
+     */
+    public function getSegment($index = 0)
+    {
+        return (isset($this->segments[$index]) ? $this->segments[$index] : '');
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
      * Filtrar un segmento recibido en URI.
      * 
      * @access private
@@ -135,6 +149,25 @@ class Core_Url {
         }
         
         return $val;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener la URL actual
+     * 
+     * @access public
+     * @param bool $noPath Si se establece como TRUE no incluimos el dominio del sitio.
+     * @return string
+     */
+    public function getUrl($noPath = false)
+    {
+        if ($noPath)
+        {
+            return $this->_detectURI();
+        }
+        
+        return $this->makeUrl('current');
     }
     
     // --------------------------------------------------------------------
@@ -169,7 +202,7 @@ class Core_Url {
      * @param array $params
      * @return string
      */
-    public function makeUrl($url, $params = array())
+    public function makeUrl($url, $params = array(), $full = false)
     {
         // URL?
         if (preg_match('/http:\/\//i', $url))
@@ -197,8 +230,31 @@ class Core_Url {
         
         $parts = explode('.', $url);
         
-        $urls .= Core::getParam('core.path');
+        $urls .= ($full) ? Core::getParam('core.path') : '/';
         $urls .= $this->_makeUrl($parts, $params);
+        
+        return $urls;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Crear URL AJAX
+     * 
+     * @access public
+     * @param string $url
+     * @return string
+     */
+    public function makeAjax($url)
+    {
+        $url = trim($url, '.');
+        $urls = '/ajax/';
+        
+        $parts = explode('.', $url);
+        
+        $urls .= $this->_makeUrl($parts);
+        
+        $urls = rtrim($urls, '/') . '.php';
         
         return $urls;
     }
@@ -258,6 +314,6 @@ class Core_Url {
             $urls = trim($urls, '&');
         }
         
-        return $urls;
+        return ($urls == '/') ? '' : $urls;
     }
 }

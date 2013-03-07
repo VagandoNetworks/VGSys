@@ -32,5 +32,6 @@ $_CONF['core.folder'] = '/';
 | Cookie config
 |--------------------------------------------------------------------------
 */
+$_CONF['core.cookie_prefix'] = '';
 $_CONF['core.cookie_path'] = '/';
 $_CONF['core.cookie_domain'] = 'vagando.com';

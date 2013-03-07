@@ -255,14 +255,46 @@ final class Core {
      */
     public static function isUser($redirect = false)
     {
-        $isUser = false;
+        $isUser = Core::getService('account.auth')->isUser();
         
         if ( ! $isUser && $redirect)
         {
-            echo 'TODO:Redirigir.';
+            // TODO: Redirección en páginas AJAX
+            
+            // Guardamos en sesión la URL a la que debemos redireccionar después de iniciar sesión.
+            Core::getLib('session')->set('redirect', Core::getLib('url')->getFullUrl(true));
+            
+            Core::getLib('url')->send('account.login');
         }
         
         return $isUser;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener el ID del usuario.
+     * 
+     * @access public
+     * @return int
+     */
+    public function getUserId()
+    {
+        return Core::getService('account.auth')->getUserId();
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
+     * Obtener datos del usuario
+     * 
+     * @access public
+     * @param string $var
+     * @return mixed
+     */
+    public function getUserBy($var = null)
+    {
+        return Core::getService('account.auth')->getUserBy($var);
     }
     
     // --------------------------------------------------------------------
@@ -282,7 +314,23 @@ final class Core {
         $template->meta(array(
             'description' => 'Descripción del sitio',
             'keywords' => 'algo, coma, punto, come',
-        ))->css(array('bootstrap.css', 'layout.css'))->js(array('jquery.min.js', 'bootstrap.min.js', 'common.js', 'main.js', 'ajax.js'));
+            )
+        )
+        ->css(array('style.css'))
+        ->js(
+            array(
+                'plugin/jquery.min.js',
+                'plugin/jquery-ui.min.js',
+                'plugin/bootstrap.min.js',
+                'common.js',
+                'main.js',
+                'plugin/ajax.js'
+            )
+        )
+        ->jsVar('user', array(
+                'id' => Core::getUserId() 
+            )
+        );
         
         // Cargar controlador y accionarlo.
         $module->getController();
@@ -397,6 +445,8 @@ final class Core {
         $return = number_format(($em + $es) - ($sm + $ss), 3) . 's';
         
         $return .= ' &bull; ' . round((memory_get_usage() - START_MEM) / 1024, 2) . 'kb';
+        
+        $return .= ' &bull; ' . Core::getLib('database')->getQueries() . ' Consultas';
         
         return $return;
     }

@@ -1,3 +1,3 @@
 <?php
 
-$route[''] = 'index';
+$route['account'] = 'login';

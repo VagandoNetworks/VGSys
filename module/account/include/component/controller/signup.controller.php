@@ -29,7 +29,7 @@ class Account_Component_Controller_Signup extends Core_Component {
         
         $this->layout->title('core.signup')
             ->setLayout('template-visitor')
-            ->css('signup.css')
-            ->js(array('signup.js', 'password.js'));
+            ->css('module/signup.css')
+            ->js(array('module/signup.js', 'password.js'));
     }
 }

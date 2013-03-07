@@ -48,6 +48,13 @@ abstract class Core_Database_Driver {
      */
     protected $rquery = null;
     
+    /**
+     * Contador de consultas
+     * 
+     * @var int
+     */
+    protected $total = 0;
+    
     // --------------------------------------------------------------------
     
     /**
@@ -459,7 +466,7 @@ abstract class Core_Database_Driver {
                 $val = $val[1];
             }
             
-            $sets = "{$col} {$cmd} " . (is_null($val) ? 'NULL' : ($escape ? $this->escape($val) : $val)) . ', ';
+            $sets .= "{$col} {$cmd} " . (is_null($val) ? 'NULL' : ($escape ? $this->escape($val) : $val)) . ', ';
         }
         $sets[strlen($sets) - 2] = ' ';
         
@@ -541,6 +548,19 @@ abstract class Core_Database_Driver {
     // --------------------------------------------------------------------
     
     /**
+     * Obtener cantidad de consultas realizadas.
+     * 
+     * @access public
+     * @return int
+     */
+    public function getQueries()
+    {
+        return $this->total;
+    }
+    
+    // --------------------------------------------------------------------
+    
+    /**
      * Creamos un LEFT JOIN para la consulta.
      * 
      * @access protected
@@ -556,7 +576,7 @@ abstract class Core_Database_Driver {
             $this->query['join'] = '';
         }
         
-        $this->query['join'] = $type . ' ' . $table . ' AS ' . $alias;
+        $this->query['join'] .= $type . ' ' . $table . ' AS ' . $alias;
         
         if (is_array($param))
         {

@@ -64,6 +64,9 @@ class Core_Router {
         
         // Y definimos nuestro módulo y controlador.
         $this->_setRequest(Core::getLib('url')->segments);
+        
+        // Reindex
+        Core::getLib('url')->reindexSegments();
     }
     
     // --------------------------------------------------------------------
@@ -170,12 +173,13 @@ class Core_Router {
         
         // Obtener las variable desde los segmentos.
         list($module, $directory, $controller) = array_pad($segments, 3, null);
+        
+        // Asignamos el módulo
+        $this->_module = $module;
 
         // Existe el directorio...
         if (is_dir($modulePath = MOD_PATH . $module . DS . MOD_COMPONENT . DS . 'controller' . DS))
-        {
-            $this->_module = $module;
-            
+        {   
             $ext = '.controller.php';
 
             // Existe un sub-controlador del módulo?
@@ -191,13 +195,13 @@ class Core_Router {
                 $this->_directory = $directory . DS;
                 
                 // Existe el controlador en el sub-directorio
-                if (is_file($modulePath . $directory . $ext))
+                if ( ! $controller && is_file($modulePath . $directory . $ext))
                 {
                     return array_slice($segments, 1); 
                 }
                 
                 // Existe un sub-controlador en el sub-directorio?
-                if( $controller && is_file($modulePath . $controller . $ext))
+                if ($controller && is_file($modulePath . $controller . $ext))
                 {
                     return array_slice($segments, 2);
                 }
@@ -208,8 +212,8 @@ class Core_Router {
                 return $segments;
             }
         }
-        
-        Core_Error::trigger('Página no encotrada: ' . $segments[0]);
+
+        return $segments;
     }
     
     // --------------------------------------------------------------------

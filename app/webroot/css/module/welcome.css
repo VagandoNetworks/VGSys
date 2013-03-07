@@ -1,0 +1,93 @@
+/* Header
+-------------------------------------------------- */
+#logo {
+    float: left;
+    display: inline;
+    margin-top: 13px;
+}
+.login {
+    float: right;
+    margin: 10px 0 0;
+}
+.login form.form-inline {
+    margin-bottom: 10px;
+}
+.login-opts {
+    margin-top: 3px;
+    padding-right: 80px;
+    text-align: right;
+}
+.login-opts .checkbox {
+    float: left;
+}
+/* Welcome
+-------------------------------------------------- */
+.welcome {
+    position: relative;
+    height: 470px;
+    width: 100%;
+    background-image: url(/img/bg/image2.jpg?);
+    background-position: 50% top;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    background-size: cover;
+}
+.main-text {
+    position: absolute;
+    top: 100px;
+    right: 0px;
+    left: 0px;
+    text-align: center;
+    text-shadow: rgba(0, 0, 0, 0.7) 0px 1px 2px;
+}
+.main-text h1 {
+    margin-bottom: 8px;
+    font-size: 42px;
+    font-weight: normal;
+    color: #fff;
+    line-height: 1;
+}
+.main-text p {
+    color: #f7f7f7;
+    line-height: 1.2;
+    font-size: 20px;
+    margin-bottom: 15px;
+    -webkit-hyphens: none;
+}
+/* Quote
+-------------------------------------------------- */
+.quote {
+    margin: 20px 0 0;
+    color: #666
+}
+.quote blockquote p {
+    font-size: 16px;
+}
+.quote blockquote small {
+    font-size: 100%;
+}
+/* Description
+-------------------------------------------------- */
+.description {
+    margin: 0px 0px 25px;
+    padding: 50px 0px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    color: #666;
+    background: #f4f4f4;
+}
+.description h2 {
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+.description p {
+    font-size: 13px;
+}
+/* Footer
+-------------------------------------------------- */
+.footer-body {
+    margin: 0;
+    border: 0;
+}

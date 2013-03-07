@@ -24,6 +24,9 @@
     // Ruta de las librerías
     define('LIB_PATH', SYS_PATH . 'library' . DS);
     
+    // Ruta de los plugins
+    define('PLUGIN_PATH', SYS_PATH . 'plugins' . DS);
+    
 /*
  * ---------------------------------------------------------------
  *  TMP & CACHE

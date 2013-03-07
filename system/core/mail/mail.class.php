@@ -177,6 +177,8 @@ class Core_Mail {
      */
     public function send()
     {
+        // TODO: Quitar esta restricción
+        return;
         // Si no tenemos un mensaje o un destinatario no podemos enviar el email.
         if ($this->_to === null || $this->_to === null)
         {

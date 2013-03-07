@@ -86,6 +86,13 @@ class Core_Template_Cache {
 	 */	
 	private $_sFuncRegexp = '[a-zA-Z_]+';
     
+    /**
+     * Plugins que serán cargados.
+     * 
+     * @var array
+     */
+    private $_plugins = array();
+    
 	/**
 	 * Class constructor. Build all the regex we will be using
 	 * with this class.
@@ -199,7 +206,20 @@ class Core_Template_Cache {
         
 		$compiledText = preg_replace('!\?>\n?<\?php!', '', $compiledText);
 
-		$compiledText = '<?php /* Cached: ' . date("F j, Y, g:i a", time()) . ' */ ?>' . "\n" . $compiledText;
+		$compiledHeader = '<?php /* Cached: ' . date("F j, Y, g:i a", time()) . ' */ ?>' . "\n";
+        
+        // Plugins
+        if (count($this->_plugins))
+        {
+            $compiledHeader .= '<?php $this->loadPlugins(array(';
+            foreach ($this->_plugins as $plugin)
+            {
+                $compiledHeader .= 'array(\''. $plugin[0] . '\', \'' . $plugin[1] . '\'),';
+            }
+            $compiledHeader .= ")); ?>\n";
+        }
+        
+        $compiledText = $compiledHeader . $compiledText;
 
 		return $compiledText;
     }
@@ -349,7 +369,17 @@ class Core_Template_Cache {
                 break;
             case 'img':
                 $args = $this->_parseArgs($arguments);
-                return "<?php echo '<img src=\"" . Core::getParam('core.url_static_img') . $this->_removeQuote($args['src']) . "\" />'; ?>";
+                $src = $args['src'];
+                unset($args['src']);
+                $attr = '';
+                if (count($args))
+                {
+                    foreach($args as $tag => $value)
+                    {
+                        $attr .= $tag . '="' . $this->_removeQuote($value) . '" ';
+                    }
+                }
+                return "<?php echo '<img src=\"" . Core::getParam('core.url_static_img') . $this->_removeQuote($src) . "\" " . $attr . "/>'; ?>";
                 break;
             case 'url':
                 $args = $this->_parseArgs($arguments);
@@ -371,6 +401,14 @@ class Core_Template_Cache {
                 }
                 return '<?php echo Core::getLib(\'url\')->makeUrl(' . $link . $array .'); ?>';
                 break;
+            case 'ajax':
+                $args = $this->_parseArgs($arguments);
+                if ( ! $args['link'])
+                {
+                    return '';
+                }
+                return '<?php echo Core::getLib(\'url\')->makeAjax(' . $args['link'] . '); ?>';
+            break;
             /** Funciones del layout **/
 			case 'title':
 				return '<?php echo $this->getTitle(); ?>';
@@ -387,6 +425,11 @@ class Core_Template_Cache {
             case 'script_vars':
                 return '<?php echo $this->getVars();?>';
                 break;
+            /** Etiquetas Módulos */
+            case 'block':
+                $args = $this->_parseArgs($arguments);
+                return '<?php Core::getBlock(' . $args['name'] . ');?>';
+                break;
             /** Funciones Form **/
             case 'html_select_date':
                 $args = $this->_parseArgs($arguments);
@@ -401,12 +444,12 @@ class Core_Template_Cache {
                 }
                 return '<?php echo Core::getLib(\'form.helper\')->selectDate(' . $array . ');?>';
             break;
-            //
+            // TODO: Checar lo de abajo
             case 'module':
                 return Core::getModuleName('string');
             break;
-            case 'topbar':
-                return '<?php Core::getBlock(\'core.template-topbar\');?>';
+            case 'header':
+                return '<?php Core::getBlock(\'core.template-header\');?>';
                 break;
 			case 'content':
                 $content = '';
@@ -419,6 +462,21 @@ class Core_Template_Cache {
             case 'debug':
                 return '<?php echo Core::getDebug(); ?>';
                 break;
+                
+            /** Cargamos la función como un plugin */
+            default:
+                $args = $this->_parseArgs($arguments);
+                if (count($args))
+                {
+                    $array = 'array(';
+                    foreach ($args as $key => $value)
+                    {
+                        $array .= '\'' . $key . '\' => ' . $value . ',';
+                    }
+                    $array = rtrim($array, ',') . ')';
+                }
+                $this->_plugins[] = array('function', $function);
+                return '<?php echo template_function_' . $function . '(' . $array . ');?>';
         }
     }
     
@@ -784,19 +842,18 @@ class Core_Template_Cache {
 
 			$arg = ((count($args) > 0) ? ', '.implode(', ', $args) : '');
             
-            //
-            switch($mod)
-            {
-				default:
-					if (function_exists($mod))
-					{
-						$variable = '' . $mod . '(' . $variable . $arg . ')';
-					}
-					else
-					{
-						$variable = "Core_Error::trigger(\"No existe el modificador: '" . $mod . "'\")";
-					}
-            }
+            // Cargar modificador
+			if (function_exists($mod))
+			{
+				$variable = '' . $mod . '(' . $variable . $arg . ')';
+			}
+			else
+			{
+                // Agregamos el plugin a la lista
+                $this->_plugins[] = array('modifier', $mod);
+                
+				$variable = 'template_modifier_' . $mod . '(' . $variable . $arg . ')';
+			}
         }
         
         return $variable;

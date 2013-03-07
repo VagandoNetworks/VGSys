@@ -1,4 +1,13 @@
-        <div id="footer">
-            <p class="pull-right"><span class="muted">Vagando Networks</span></p>
-            <p>{param var='core.site_title'} &copy; 2013 &bull; <a href="#">Privacidad</a> &bull; <a href="#">Condiciones</a> &bull; <a href="#">Publicidad</a> &bull; {debug}</p>
+        <div class="container">
+            <div class="footer-body clearfix">
+                <ul>
+                    <li>{param var='core.site_title'} &copy; 2013</li>
+                    <li><span class="muted">{debug}</span></li>
+                </ul>
+                <ul class="footer-menu">
+                    <li><a href="#">Privacidad</a></li>
+                    <li><a href="#">Condiciones</a></li>
+                    <li><a href="#">Publicidad</a></li>
+                </ul>
+            </div>
         </div>

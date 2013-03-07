@@ -28,6 +28,13 @@ class Core_Module {
     private $_module = '';
     
     /**
+     * Directorio del controlador
+     * 
+     * @var string
+     */
+    private $_directory = '';
+    
+    /**
      * Controlador por defecto que será ejecutado.
      * 
      * @var string
@@ -92,6 +99,7 @@ class Core_Module {
         // Obtenemos el módulo y controlador designado
         // previamente comprobada su existencia.
         $this->_module = $router->getModule();
+        $this->_directory = $router->getDirectory();
         $this->_controller = $router->getController();
         
         // Sobre escribir el index para mostrar el index para miembros o para visitantes.
@@ -100,7 +108,12 @@ class Core_Module {
             $this->_controller = (Core::isUser() ? 'index-member' : 'index-visitor');
         }
         
-        return;
+        // Si no existe el archivo del módulo obtenido entonces lo tomamos como un nombre de usuario...
+        if ( ! file_exists(MOD_PATH . $this->_module . DS))
+        {
+            $this->_module = 'profile';
+            $this->_controller = 'index';
+        }
     }
     
     // --------------------------------------------------------------------
@@ -113,7 +126,11 @@ class Core_Module {
      */
     public function getController()
     {
-        return $this->getComponent($this->_module . '.' . $this->_controller, array('noTemplate' => false), 'controller');
+        // Directorio extra
+        $directory = ($this->_directory) ? str_replace(DS, '.', $this->_directory) : '';
+        
+        // Cargamos el componente
+        return $this->getComponent($this->_module . '.' . $directory . $this->_controller, array('noTemplate' => false), 'controller');
     }
     
     // --------------------------------------------------------------------

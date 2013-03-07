@@ -7,14 +7,18 @@
 {style}
 </head>
 
-<body class="{module}">
-    {topbar}
-    <div class="page-container">
-        <div class="page-canvas">
+<body>
+    <header>
+        {header}
+    </header>
+    <div class="wrapper">
+        <div class="container">
         {content}
         </div>
-        {footer}
     </div>
+    <footer>
+        {footer}
+    </footer>
 {script_vars}
 {script}
 </body>

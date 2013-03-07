@@ -62,9 +62,9 @@ class Core_Error {
      * @access public
      * @return array
      */
-    public function get()
+    public function get($array = false)
     {
-        return self::$_errors;
+        return ($array) ? self::$_errors : implode('', self::$_errors);
     }
     
     // --------------------------------------------------------------------

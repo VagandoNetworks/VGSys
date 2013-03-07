@@ -45,6 +45,8 @@
  */
     @date_default_timezone_set('America/Mexico_City');
     
+    setlocale(LC_ALL, 'es_ES@euro', 'es_ES', 'esp');
+    
     define('CORE_TIME', time());
 
 /*
@@ -95,3 +97,4 @@
     Core::getLib('session')->init();
     
     // Iniciar la sesión del usuario.
+    Core::getService('user.session')->setUserSession();
